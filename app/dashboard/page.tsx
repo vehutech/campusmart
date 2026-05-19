@@ -3,170 +3,137 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import Link from "next/link";
 import { ShoppingBag, Package, MessageSquare, Heart, Plus, ArrowRight, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
-
   const isVendor = session.user.role === "VENDOR";
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Welcome header */}
-      <div className="flex items-start justify-between mb-10">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold">
-              Hello, {session.user.name?.split(" ")[0]} 👋
-            </h1>
-            <Badge variant={isVendor ? "info" : "success"}>
-              {session.user.role}
-            </Badge>
-          </div>
-          <p className="text-[var(--text-muted)] text-sm">
-            Welcome to your CampusMart dashboard
-          </p>
-        </div>
-        {isVendor && (
-          <Link href="/dashboard/vendor/products/new">
-            <Button size="sm">
-              <Plus className="w-4 h-4" /> List Product
-            </Button>
-          </Link>
-        )}
-      </div>
+  const vendorStats = [
+    { label: "Total Products", value: "0",  icon: Package,      color: "#00d4ff" },
+    { label: "Active Orders",  value: "0",  icon: ShoppingBag,  color: "#00e5a0" },
+    { label: "Messages",       value: "0",  icon: MessageSquare,color: "#ff7d3b" },
+    { label: "Total Sales",    value: "₦0", icon: TrendingUp,   color: "#a78bfa" },
+  ];
+  const buyerStats = [
+    { label: "Cart Items",  value: "0", icon: ShoppingBag,  color: "#00d4ff" },
+    { label: "My Orders",   value: "0", icon: Package,      color: "#00e5a0" },
+    { label: "Messages",    value: "0", icon: MessageSquare,color: "#ff7d3b" },
+    { label: "Wishlist",    value: "0", icon: Heart,        color: "#ff4d6d" },
+  ];
+  const stats = isVendor ? vendorStats : buyerStats;
 
-      {/* Quick stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        {(isVendor
-          ? [
-              { label: "Total Products", value: "0", icon: Package, color: "#00d4ff" },
-              { label: "Active Orders", value: "0", icon: ShoppingBag, color: "#00e5a0" },
-              { label: "Messages", value: "0", icon: MessageSquare, color: "#ff7d3b" },
-              { label: "Total Sales", value: "₦0", icon: TrendingUp, color: "#a78bfa" },
-            ]
-          : [
-              { label: "Cart Items", value: "0", icon: ShoppingBag, color: "#00d4ff" },
-              { label: "My Orders", value: "0", icon: Package, color: "#00e5a0" },
-              { label: "Messages", value: "0", icon: MessageSquare, color: "#ff7d3b" },
-              { label: "Wishlist", value: "0", icon: Heart, color: "#ff4d6d" },
-            ]
-        ).map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <div key={stat.label} className="bg-[var(--bg-card)] border border-[var(--border-muted)] rounded p-4">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs text-[var(--text-subtle)]">{stat.label}</p>
-                <div
-                  className="w-8 h-8 rounded-sm flex items-center justify-center"
-                  style={{ backgroundColor: `${stat.color}15`, color: stat.color }}
-                >
-                  <Icon className="w-4 h-4" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold">{stat.value}</p>
+  const vendorLinks = [
+    { href: "/dashboard/vendor/products/new", icon: Plus,          title: "List New Product",  desc: "Add a product to your shop",                 color: "#00d4ff" },
+    { href: "/dashboard/vendor/products",     icon: Package,       title: "Manage Products",   desc: "Edit or remove your listings",               color: "#00e5a0" },
+    { href: "/dashboard/vendor/orders",       icon: ShoppingBag,   title: "View Orders",       desc: "Track and confirm incoming orders",          color: "#ff7d3b" },
+    { href: "/dashboard/messages",            icon: MessageSquare, title: "Messages",          desc: "Respond to buyer enquiries",                 color: "#a78bfa" },
+  ];
+  const buyerLinks = [
+    { href: "/products",            icon: Package,       title: "Browse Products",   desc: "Discover campus deals",                      color: "#00d4ff" },
+    { href: "/cart",                icon: ShoppingBag,   title: "My Cart",           desc: "Review and checkout items",                  color: "#00e5a0" },
+    { href: "/dashboard/orders",    icon: TrendingUp,    title: "My Orders",         desc: "Track your purchase history",                color: "#ff7d3b" },
+    { href: "/dashboard/messages",  icon: MessageSquare, title: "Messages",          desc: "Chat with sellers",                          color: "#a78bfa" },
+  ];
+  const links = isVendor ? vendorLinks : buyerLinks;
+
+  return (
+    <>
+      <style>{`
+        .dash         { min-height: calc(100vh - 64px); background: var(--bg); padding: 40px 24px; }
+        .dash-inner   { max-width: 1100px; margin: 0 auto; }
+
+        .dash-header  { display: flex; align-items: flex-start; justify-content: space-between;
+                        margin-bottom: 36px; flex-wrap: wrap; gap: 12px; }
+        .dash-greeting h1 { font-size: 1.5rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+        .dash-greeting p  { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+        .role-badge   { display: inline-flex; align-items: center; padding: 3px 10px;
+                        border-radius: 999px; font-size: 11px; font-weight: 600; margin-left: 10px;
+                        background: rgba(0,212,255,0.1); color: var(--accent);
+                        border: 1px solid rgba(0,212,255,0.2); vertical-align: middle; }
+        .btn-new      { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px;
+                        border-radius: 10px; background: var(--accent); color: #0a0f1e;
+                        font-size: 13px; font-weight: 600; text-decoration: none;
+                        box-shadow: 0 0 14px rgba(0,212,255,0.2); transition: opacity 0.15s; }
+        .btn-new:hover { opacity: 0.88; }
+
+        .stats-grid   { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
+        @media (max-width: 800px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        .stat-card    { background: var(--bg-card); border: 1px solid var(--border-muted);
+                        border-radius: 14px; padding: 20px; }
+        .stat-top     { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .stat-lbl     { font-size: 12px; color: var(--text-subtle); }
+        .stat-icon    { width: 34px; height: 34px; border-radius: 9px;
+                        display: flex; align-items: center; justify-content: center; }
+        .stat-val     { font-size: 1.75rem; font-weight: 800; color: var(--text); }
+
+        .links-grid   { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        @media (max-width: 600px) { .links-grid { grid-template-columns: 1fr; } }
+        .quick-card   { display: flex; align-items: center; gap: 16px; padding: 20px;
+                        background: var(--bg-card); border: 1px solid var(--border-muted);
+                        border-radius: 14px; text-decoration: none; transition: all 0.2s; }
+        .quick-card:hover { border-color: var(--border); background: var(--bg-elevated); }
+        .quick-icon   { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+                        display: flex; align-items: center; justify-content: center; }
+        .quick-text   { flex: 1; min-width: 0; }
+        .quick-text strong { font-size: 14px; font-weight: 600; color: var(--text); display: block; }
+        .quick-text span   { font-size: 12px; color: var(--text-subtle); margin-top: 2px; display: block; }
+        .quick-arrow  { color: var(--text-subtle); transition: transform 0.2s; flex-shrink: 0; }
+        .quick-card:hover .quick-arrow { transform: translateX(4px); color: var(--accent); }
+      `}</style>
+
+      <div className="dash">
+        <div className="dash-inner">
+
+          {/* Header */}
+          <div className="dash-header">
+            <div className="dash-greeting">
+              <h1>
+                Hello, {session.user.name?.split(" ")[0]} 👋
+                <span className="role-badge">{session.user.role}</span>
+              </h1>
+              <p>Welcome to your CampusMart dashboard</p>
             </div>
-          );
-        })}
-      </div>
+            {isVendor && (
+              <Link href="/dashboard/vendor/products/new" className="btn-new">
+                <Plus size={15} /> List Product
+              </Link>
+            )}
+          </div>
 
-      {/* Quick links */}
-      <div className="grid md:grid-cols-2 gap-4">
-        {isVendor ? (
-          <>
-            <QuickCard
-              href="/dashboard/vendor/products"
-              icon={Package}
-              title="Manage Products"
-              desc="Add, edit, or remove your product listings"
-              color="#00d4ff"
-            />
-            <QuickCard
-              href="/dashboard/vendor/orders"
-              icon={ShoppingBag}
-              title="View Orders"
-              desc="Track and manage incoming orders from buyers"
-              color="#00e5a0"
-            />
-            <QuickCard
-              href="/dashboard/messages"
-              icon={MessageSquare}
-              title="Messages"
-              desc="Respond to buyer inquiries"
-              color="#ff7d3b"
-            />
-            <QuickCard
-              href="/products"
-              icon={TrendingUp}
-              title="Browse Marketplace"
-              desc="See what other vendors are selling"
-              color="#a78bfa"
-            />
-          </>
-        ) : (
-          <>
-            <QuickCard
-              href="/products"
-              icon={Package}
-              title="Browse Products"
-              desc="Discover thousands of campus deals"
-              color="#00d4ff"
-            />
-            <QuickCard
-              href="/cart"
-              icon={ShoppingBag}
-              title="My Cart"
-              desc="Review and checkout your selected items"
-              color="#00e5a0"
-            />
-            <QuickCard
-              href="/dashboard/orders"
-              icon={TrendingUp}
-              title="My Orders"
-              desc="Track your purchase history"
-              color="#ff7d3b"
-            />
-            <QuickCard
-              href="/dashboard/messages"
-              icon={MessageSquare}
-              title="Messages"
-              desc="Chat with sellers about products"
-              color="#a78bfa"
-            />
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
+          {/* Stats */}
+          <div className="stats-grid">
+            {stats.map(({ label, value, icon: Icon, color }) => (
+              <div className="stat-card" key={label}>
+                <div className="stat-top">
+                  <span className="stat-lbl">{label}</span>
+                  <div className="stat-icon" style={{ background: `${color}18`, color }}>
+                    <Icon size={16} />
+                  </div>
+                </div>
+                <div className="stat-val">{value}</div>
+              </div>
+            ))}
+          </div>
 
-function QuickCard({
-  href, icon: Icon, title, desc, color,
-}: {
-  href: string;
-  icon: any;
-  title: string;
-  desc: string;
-  color: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group flex items-center gap-4 p-5 bg-[var(--bg-card)] border border-[var(--border-muted)] rounded hover:border-[var(--border)] hover:bg-[var(--bg-elevated)] transition-all duration-200"
-    >
-      <div
-        className="w-12 h-12 rounded-sm flex items-center justify-center shrink-0"
-        style={{ backgroundColor: `${color}15`, color }}
-      >
-        <Icon className="w-5 h-5" />
+          {/* Quick links */}
+          <div className="links-grid">
+            {links.map(({ href, icon: Icon, title, desc, color }) => (
+              <Link key={href} href={href} className="quick-card">
+                <div className="quick-icon" style={{ background: `${color}18`, color }}>
+                  <Icon size={18} />
+                </div>
+                <div className="quick-text">
+                  <strong>{title}</strong>
+                  <span>{desc}</span>
+                </div>
+                <ArrowRight size={16} className="quick-arrow" />
+              </Link>
+            ))}
+          </div>
+
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold text-sm group-hover:text-[var(--accent)] transition-colors">{title}</p>
-        <p className="text-xs text-[var(--text-subtle)] mt-0.5 truncate">{desc}</p>
-      </div>
-      <ArrowRight className="w-4 h-4 text-[var(--text-subtle)] group-hover:text-[var(--accent)] group-hover:translate-x-1 transition-all" />
-    </Link>
+    </>
   );
 }

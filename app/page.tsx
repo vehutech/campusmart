@@ -1,165 +1,203 @@
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Zap, Users, BookOpen, Laptop, Shirt, Utensils, Package } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const categories = [
-  { name: "Books", icon: BookOpen, count: "200+", slug: "books", color: "#00d4ff" },
-  { name: "Electronics", icon: Laptop, count: "150+", slug: "electronics", color: "#00e5a0" },
-  { name: "Fashion", icon: Shirt, count: "300+", slug: "fashion", color: "#ff7d3b" },
-  { name: "Food", icon: Utensils, count: "80+", slug: "food", color: "#ff4d6d" },
-  { name: "Accessories", icon: Package, count: "120+", slug: "accessories", color: "#a78bfa" },
+  { name: "Books",       icon: BookOpen, count: "200+", slug: "books",       color: "#00d4ff" },
+  { name: "Electronics", icon: Laptop,   count: "150+", slug: "electronics", color: "#00e5a0" },
+  { name: "Fashion",     icon: Shirt,    count: "300+", slug: "fashion",     color: "#ff7d3b" },
+  { name: "Food",        icon: Utensils, count: "80+",  slug: "food",        color: "#ff4d6d" },
+  { name: "Accessories", icon: Package,  count: "120+", slug: "accessories", color: "#a78bfa" },
 ];
 
 const features = [
-  {
-    icon: ShieldCheck,
-    title: "Verified Students Only",
-    desc: "Every account is tied to a FULokoja student or staff identity — no anonymous sellers.",
-    color: "#00e5a0",
-  },
-  {
-    icon: Zap,
-    title: "Instant Connection",
-    desc: "Message sellers directly, negotiate prices, and arrange campus pickup in minutes.",
-    color: "#00d4ff",
-  },
-  {
-    icon: Users,
-    title: "Campus Community",
-    desc: "Buy and sell within a trusted community of 10,000+ students and vendors.",
-    color: "#ff7d3b",
-  },
+  { icon: ShieldCheck, title: "Verified Students Only",  desc: "Every account is tied to a FULokoja student or staff identity — no anonymous sellers.", color: "#00e5a0" },
+  { icon: Zap,         title: "Instant Connection",      desc: "Message sellers directly, negotiate prices, and arrange campus pickup in minutes.",    color: "#00d4ff" },
+  { icon: Users,       title: "Campus Community",        desc: "Buy and sell within a trusted community of 10,000+ students and vendors.",             color: "#ff7d3b" },
 ];
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="relative overflow-hidden px-4 pt-20 pb-28 text-center">
-        {/* Glow effects */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[var(--accent)] opacity-5 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute top-20 left-1/4 w-[300px] h-[300px] bg-[var(--green)] opacity-5 blur-[100px] rounded-full pointer-events-none" />
+    <>
+      <style>{`
+        .page-wrap   { min-height: 100vh; background: var(--bg); color: var(--text); }
+        .container   { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        .section     { padding: 72px 0; border-top: 1px solid var(--border-muted); }
+        .section-alt { background: var(--bg-card); }
 
-        <div className="relative max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(0,212,255,0.2)] bg-[var(--accent-glow)] text-[var(--accent)] text-xs font-medium mb-6 fade-up">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-            Federal University Lokoja · Campus Marketplace
-          </div>
+        /* Hero */
+        .hero        { padding: 96px 0 80px; text-align: center; position: relative; overflow: hidden; }
+        .hero-glow   { position: absolute; inset: 0; pointer-events: none;
+                       background: radial-gradient(ellipse 700px 400px at 50% 0%, rgba(0,212,255,0.07) 0%, transparent 70%); }
+        .hero-pill   { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px;
+                       border-radius: 999px; border: 1px solid rgba(0,212,255,0.25);
+                       background: rgba(0,212,255,0.06); color: var(--accent);
+                       font-size: 12px; font-weight: 500; margin-bottom: 28px; }
+        .hero-dot    { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+        .hero h1     { font-size: clamp(2.6rem, 7vw, 5rem); font-weight: 900; line-height: 1.08;
+                       letter-spacing: -0.03em; margin-bottom: 24px; }
+        .hero h1 em  { font-style: normal; color: var(--accent); }
+        .hero p      { font-size: 1.1rem; color: var(--text-muted); max-width: 480px;
+                       margin: 0 auto 40px; line-height: 1.7; }
+        .hero-btns   { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { display: inline-flex; align-items: center; gap: 8px;
+                       padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 600;
+                       background: var(--accent); color: #0a0f1e; text-decoration: none;
+                       box-shadow: 0 0 24px rgba(0,212,255,0.3); transition: opacity 0.2s; }
+        .btn-primary:hover { opacity: 0.88; }
+        .btn-outline { display: inline-flex; align-items: center; gap: 8px;
+                       padding: 14px 28px; border-radius: 10px; font-size: 15px; font-weight: 600;
+                       border: 1.5px solid var(--accent); color: var(--accent); text-decoration: none;
+                       transition: background 0.2s; }
+        .btn-outline:hover { background: rgba(0,212,255,0.08); }
+        .hero-stats  { display: flex; justify-content: center; gap: 48px;
+                       margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--border-muted); }
+        .stat-num    { font-size: 1.6rem; font-weight: 900; color: var(--accent); }
+        .stat-lbl    { font-size: 11px; color: var(--text-subtle); margin-top: 2px; }
 
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 fade-up-delay-1">
-            Buy & Sell on
-            <br />
-            <span className="text-[var(--accent)]">Campus,</span>
-            <span className="text-[var(--text-muted)]"> Effortlessly.</span>
-          </h1>
+        /* Section header */
+        .section-hdr      { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; }
+        .section-hdr h2   { font-size: 1.25rem; font-weight: 700; }
+        .section-hdr p    { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+        .section-hdr a    { font-size: 13px; color: var(--accent); text-decoration: none; display: flex; align-items: center; gap: 4px; }
+        .section-hdr a:hover { text-decoration: underline; }
 
-          <p className="text-lg text-[var(--text-muted)] max-w-xl mx-auto mb-10 fade-up-delay-2">
-            The trusted marketplace built for FULokoja students. Find textbooks, electronics, fashion, and more — from people you actually know.
-          </p>
+        /* Category grid */
+        .cat-grid  { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        @media (max-width: 900px) { .cat-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 560px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+        .cat-card  { display: flex; flex-direction: column; align-items: center; gap: 12px;
+                     padding: 24px 16px; border-radius: 12px; text-decoration: none;
+                     border: 1px solid var(--border-muted); background: var(--bg-card);
+                     text-align: center; transition: border-color 0.2s, background 0.2s; }
+        .cat-card:hover { border-color: var(--border); background: var(--bg-elevated); }
+        .cat-icon  { width: 48px; height: 48px; border-radius: 10px;
+                     display: flex; align-items: center; justify-content: center; }
+        .cat-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+        .cat-count { font-size: 11px; color: var(--text-subtle); margin-top: 2px; }
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 fade-up-delay-3">
-            <Link href="/products">
-              <Button size="lg" className="w-full sm:w-auto">
-                Browse Products <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-            <Link href="/register?role=VENDOR">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                Start Selling
-              </Button>
-            </Link>
-          </div>
+        /* Features */
+        .feat-title { text-align: center; margin-bottom: 40px; }
+        .feat-title h2 { font-size: 1.25rem; font-weight: 700; }
+        .feat-title p  { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+        .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        @media (max-width: 700px) { .feat-grid { grid-template-columns: 1fr; } }
+        .feat-card { padding: 28px; border-radius: 12px; background: var(--bg-elevated);
+                     border: 1px solid var(--border-muted); }
+        .feat-icon { width: 44px; height: 44px; border-radius: 10px;
+                     display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+        .feat-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+        .feat-card p  { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
 
-          {/* Stats */}
-          <div className="flex items-center justify-center gap-8 mt-16 pt-8 border-t border-[var(--border-muted)] fade-up-delay-3">
-            {[["10K+", "Students"], ["500+", "Products"], ["200+", "Vendors"]].map(([num, label]) => (
-              <div key={label} className="text-center">
-                <div className="text-2xl font-extrabold text-[var(--accent)]">{num}</div>
-                <div className="text-xs text-[var(--text-subtle)] mt-0.5">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        /* CTA */
+        .cta { text-align: center; }
+        .cta h2 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 800; margin-bottom: 12px; }
+        .cta p  { color: var(--text-muted); font-size: 15px; margin-bottom: 32px; }
 
-      {/* Categories */}
-      <section className="px-4 py-16 max-w-7xl mx-auto">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold">Shop by Category</h2>
-            <p className="text-[var(--text-muted)] text-sm mt-1">Find exactly what you need</p>
-          </div>
-          <Link href="/categories" className="text-[var(--accent)] text-sm hover:underline flex items-center gap-1">
-            View all <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+      `}</style>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            return (
-              <Link
-                key={cat.slug}
-                href={`/products?category=${cat.slug}`}
-                className="group p-5 rounded bg-[var(--bg-card)] border border-[var(--border-muted)] hover:border-[var(--border)] hover:bg-[var(--bg-elevated)] transition-all duration-200 flex flex-col items-center gap-3 text-center"
-              >
-                <div
-                  className="w-12 h-12 rounded-sm flex items-center justify-center"
-                  style={{ backgroundColor: `${cat.color}15`, color: cat.color }}
-                >
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm group-hover:text-[var(--text)] transition-colors">{cat.name}</p>
-                  <p className="text-xs text-[var(--text-subtle)] mt-0.5">{cat.count} items</p>
-                </div>
+      <div className="page-wrap">
+
+        {/* ── Hero ── */}
+        <section className="hero">
+          <div className="hero-glow" />
+          <div className="container" style={{position:"relative"}}>
+            <div className="hero-pill">
+              <span className="hero-dot" />
+              Federal University Lokoja · Campus Marketplace
+            </div>
+            <h1>
+              Buy &amp; Sell on Campus,<br />
+              <em>Effortlessly.</em>
+            </h1>
+            <p>
+              The trusted marketplace built for FULokoja students. Find textbooks,
+              electronics, fashion, and more — from people you actually know.
+            </p>
+            <div className="hero-btns">
+              <Link href="/products" className="btn-primary">
+                Browse Products <ArrowRight size={16} />
               </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="px-4 py-16 bg-[var(--bg-card)] border-y border-[var(--border-muted)]">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold">Why CampusMart?</h2>
-            <p className="text-[var(--text-muted)] text-sm mt-2">Designed for the FULokoja campus community</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {features.map((f) => {
-              const Icon = f.icon;
-              return (
-                <div key={f.title} className="p-6 rounded bg-[var(--bg-elevated)] border border-[var(--border-muted)]">
-                  <div
-                    className="w-10 h-10 rounded-sm flex items-center justify-center mb-4"
-                    style={{ backgroundColor: `${f.color}15`, color: f.color }}
-                  >
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-semibold mb-2">{f.title}</h3>
-                  <p className="text-sm text-[var(--text-muted)] leading-relaxed">{f.desc}</p>
+              <Link href="/register?role=VENDOR" className="btn-outline">
+                Start Selling
+              </Link>
+            </div>
+            <div className="hero-stats">
+              {[["10K+","Students"],["500+","Products"],["200+","Vendors"]].map(([n,l]) => (
+                <div key={l} style={{textAlign:"center"}}>
+                  <div className="stat-num">{n}</div>
+                  <div className="stat-lbl">{l}</div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="px-4 py-20 text-center">
-        <div className="max-w-xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Ready to start selling?</h2>
-          <p className="text-[var(--text-muted)] mb-8">
-            Join hundreds of student vendors already earning on CampusMart.
-          </p>
-          <Link href="/register?role=VENDOR">
-            <Button size="lg">
-              Create Vendor Account <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
-        </div>
-      </section>
-    </div>
+        {/* ── Categories ── */}
+        <section className="section">
+          <div className="container">
+            <div className="section-hdr">
+              <div>
+                <h2>Shop by Category</h2>
+                <p>Find exactly what you need</p>
+              </div>
+              <Link href="/categories">View all <ArrowRight size={13} /></Link>
+            </div>
+            <div className="cat-grid">
+              {categories.map((cat) => {
+                const Icon = cat.icon;
+                return (
+                  <Link key={cat.slug} href={`/products?category=${cat.slug}`} className="cat-card">
+                    <div className="cat-icon" style={{background:`${cat.color}18`, color:cat.color}}>
+                      <Icon size={20} />
+                    </div>
+                    <div>
+                      <div className="cat-name">{cat.name}</div>
+                      <div className="cat-count">{cat.count} items</div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ── Features ── */}
+        <section className="section section-alt">
+          <div className="container">
+            <div className="feat-title">
+              <h2>Why CampusMart?</h2>
+              <p>Designed for the FULokoja campus community</p>
+            </div>
+            <div className="feat-grid">
+              {features.map((f) => {
+                const Icon = f.icon;
+                return (
+                  <div key={f.title} className="feat-card">
+                    <div className="feat-icon" style={{background:`${f.color}18`, color:f.color}}>
+                      <Icon size={20} />
+                    </div>
+                    <h3>{f.title}</h3>
+                    <p>{f.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ── CTA ── */}
+        <section className="section cta">
+          <div className="container">
+            <h2>Ready to start selling?</h2>
+            <p>Join hundreds of student vendors already earning on CampusMart.</p>
+            <Link href="/register?role=VENDOR" className="btn-primary" style={{display:"inline-flex"}}>
+              Create Vendor Account <ArrowRight size={16} />
+            </Link>
+          </div>
+        </section>
+
+      </div>
+    </>
   );
 }

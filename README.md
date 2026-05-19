@@ -44,7 +44,10 @@ Fill in your values in `.env.local`:
 ### 3. Set Up the Database
 
 ```bash
-# Push schema to database
+# Generate Prisma client (required before build/dev)
+npx prisma generate
+
+# Push schema to your Neon database
 npx prisma db push
 
 # Seed demo data
@@ -56,6 +59,8 @@ npx prisma db seed
 ```bash
 npm run dev
 ```
+
+> **Note:** `postinstall` runs `prisma generate` automatically after every `npm install` / `pnpm install`. The `build` script also runs it. You only need to run it manually the very first time if you skip the install step.
 
 Visit [http://localhost:3000](http://localhost:3000)
 
