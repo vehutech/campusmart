@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { ChevronLeft, Upload, X, Plus, Loader } from "lucide-react";
+import { ChevronLeft, Loader } from "lucide-react";
+import { ImageUpload } from "@/components/shared/image-upload";
 
 interface Category { id: string; name: string; slug: string }
 
@@ -113,18 +114,6 @@ export function ProductForm({ mode }: { mode: "create" | "edit" }) {
         .cond-option strong { display: block; font-size: 13px; font-weight: 600; color: var(--text); }
         .cond-option span   { font-size: 11px; color: var(--text-subtle); margin-top: 3px; display: block; }
 
-        .img-upload { border: 1.5px dashed var(--border); border-radius: 12px; padding: 32px;
-                      text-align: center; cursor: pointer; transition: all 0.15s; }
-        .img-upload:hover { border-color: var(--accent); background: rgba(0,212,255,0.03); }
-        .img-upload p   { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
-        .img-upload small { font-size: 11px; color: var(--text-subtle); }
-        .img-preview { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-        .img-item   { position: relative; width: 80px; height: 80px; border-radius: 10px; overflow: hidden;
-                      border: 1px solid var(--border-muted); }
-        .img-item img { width: 100%; height: 100%; object-fit: cover; }
-        .img-remove { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px;
-                      border-radius: 50%; background: rgba(0,0,0,0.7); border: none; cursor: pointer;
-                      display: flex; align-items: center; justify-content: center; color: white; }
 
         .alert-error { padding: 12px 14px; border-radius: 10px; font-size: 13px;
                        background: rgba(255,77,109,0.08); border: 1px solid rgba(255,77,109,0.2); color: var(--red); }
@@ -217,27 +206,11 @@ export function ProductForm({ mode }: { mode: "create" | "edit" }) {
             {/* Images */}
             <div className="pf-card">
               <div className="pf-section-title">Product Images</div>
-              <div className="img-upload" onClick={() => {
-                const url = prompt("Paste image URL (Cloudinary or direct link):");
-                if (url) setForm(f => ({ ...f, images: [...f.images, url] }));
-              }}>
-                <Upload size={24} style={{color:"var(--text-subtle)", margin:"0 auto"}} />
-                <p>Click to add image URL</p>
-                <small>Paste a Cloudinary or direct image URL</small>
-              </div>
-              {form.images.length > 0 && (
-                <div className="img-preview">
-                  {form.images.map((img, i) => (
-                    <div key={i} className="img-item">
-                      <img src={img} alt={`Product ${i+1}`} />
-                      <button type="button" className="img-remove"
-                        onClick={() => setForm(f => ({ ...f, images: f.images.filter((_, j) => j !== i) }))}>
-                        <X size={10} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <ImageUpload
+                images={form.images}
+                onChange={(imgs) => setForm(f => ({ ...f, images: imgs }))}
+                maxImages={4}
+              />
             </div>
 
             <div className="pf-actions">

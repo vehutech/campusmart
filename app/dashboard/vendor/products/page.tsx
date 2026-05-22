@@ -1,3 +1,5 @@
+// app/dashboard/vendor/products/page.tsx
+
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -5,7 +7,6 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Plus, Edit, Eye } from "lucide-react";
 import { formatPrice, formatDate } from "@/lib/utils";
-import Image from "next/image";
 
 export default async function VendorProductsPage() {
   const session = await getServerSession(authOptions);
@@ -100,7 +101,7 @@ export default async function VendorProductsPage() {
                   <div key={p.id} className="prod-row">
                     <div className="prod-info">
                       <div className="prod-thumb">
-                        {p.images?.[0] ? <Image src={p.images[0]} alt={p.title} /> : "🛍️"}
+                        {p.images?.[0] ? <img src={p.images[0]} alt={p.title} /> : "🛍️"}
                       </div>
                       <div>
                         <div className="prod-name">{p.title}</div>
