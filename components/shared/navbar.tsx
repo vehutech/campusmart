@@ -91,7 +91,7 @@ export function Navbar() {
             <Link href="/products" className="nav-link">Browse</Link>
             <Link href="/categories" className="nav-link">Categories</Link>
             {session?.user.role === "VENDOR" && (
-              <Link href="/dashboard/vendor" className="nav-link">My Shop</Link>
+              <Link href="/dashboard/vendor/products" className="nav-link">My Shop</Link>
             )}
           </div>
 
@@ -142,7 +142,7 @@ export function Navbar() {
           <Link href="/products" className="mobile-link" onClick={() => setOpen(false)}>Browse Products</Link>
           <Link href="/categories" className="mobile-link" onClick={() => setOpen(false)}>Categories</Link>
           {session?.user.role === "VENDOR" && (
-            <Link href="/dashboard/vendor" className="mobile-link" onClick={() => setOpen(false)}>My Shop</Link>
+            <Link href="/dashboard/vendor/products" className="mobile-link" onClick={() => setOpen(false)}>My Shop</Link>
           )}
           <div className="mobile-divider" />
           {session ? (
